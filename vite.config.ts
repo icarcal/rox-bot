@@ -10,9 +10,6 @@ export default defineConfig({
     electron([
       {
         entry: 'src/main/index.ts',
-        onstart(options) {
-          options.reload();
-        },
         vite: {
           build: {
             outDir: 'dist/main',
@@ -24,9 +21,6 @@ export default defineConfig({
       },
       {
         entry: 'src/preload/index.ts',
-        onstart(options) {
-          options.reload();
-        },
         vite: {
           build: {
             outDir: 'dist/preload',
