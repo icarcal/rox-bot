@@ -17,6 +17,17 @@ export function TemplateManager() {
       ? templates
       : templates.filter((t) => t.category === filterCategory);
 
+  const toFileUrl = (filePath: string) => {
+    if (!filePath) return '';
+    const normalized = filePath.replace(/\\/g, '/');
+    if (normalized.startsWith('file://')) return normalized;
+    // Ensure Windows paths include the third slash (file:///C:/...)
+    if (/^[a-zA-Z]:/.test(normalized)) {
+      return `file:///${encodeURI(normalized)}`;
+    }
+    return `file://${encodeURI(normalized)}`;
+  };
+
   const handleCapturePreview = async () => {
     try {
       const res = await window.electronAPI.invoke(IPC_CHANNELS.TEMPLATE_CAPTURE_REGION, {
@@ -91,6 +102,21 @@ export function TemplateManager() {
     }
   };
 
+  const handleFindAndClick = async (templateName: string) => {
+    try {
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.SCREEN_FIND_AND_CLICK, {
+        templateName,
+      });
+
+      if (!res.success) {
+        alert(res.error || 'Unable to find the template on screen');
+      }
+    } catch (error) {
+      console.error('Failed to find and click template:', error);
+      alert('Find and click failed');
+    }
+  };
+
   return (
     <div className="h-full flex flex-col p-4">
       <div className="flex items-center justify-between mb-4">
@@ -100,23 +126,9 @@ export function TemplateManager() {
             💡 Templates are found anywhere on screen during automation
           </p>
         </div>
-        <div className="flex gap-2">
-          <button
-            onClick={handleImportTemplate}
-            className="btn btn-secondary"
-          >
-            Upload Image
-          </button>
-          <button
-            onClick={() => setIsCapturing(true)}
-            className="btn btn-primary"
-          >
-            + Capture New
-          </button>
-        </div>
       </div>
 
-      {/* Filter */}
+      {/* Filter + Actions */}
       <div className="flex items-center gap-2 mb-4">
         <span className="text-sm text-gray-400">Filter:</span>
         <select
@@ -134,6 +146,21 @@ export function TemplateManager() {
         <span className="text-sm text-gray-500">
           {filteredTemplates.length} template{filteredTemplates.length !== 1 ? 's' : ''}
         </span>
+
+        <div className="flex items-center gap-2 ml-auto">
+          <button
+            onClick={handleImportTemplate}
+            className="btn btn-secondary"
+          >
+            Upload Image
+          </button>
+          <button
+            onClick={() => setIsCapturing(true)}
+            className="btn btn-primary"
+          >
+            + Capture New
+          </button>
+        </div>
       </div>
 
       {/* Capture Modal */}
@@ -266,17 +293,33 @@ export function TemplateManager() {
             {filteredTemplates.map((template) => (
               <div
                 key={template.id}
-                className="bg-dark-300 rounded-lg p-3 border border-gray-700"
+                className="bg-dark-300 rounded-lg p-3 border border-gray-700 space-y-2"
               >
-                <div className="aspect-video bg-dark-400 rounded mb-2 flex items-center justify-center text-gray-500">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+                <div className="aspect-video bg-dark-400 rounded overflow-hidden border border-gray-700">
+                  {template.path ? (
+                    <img
+                      src={toFileUrl(template.path)}
+                      alt={template.name}
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-500">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                  )}
                 </div>
+
                 <div className="flex items-start justify-between">
                   <div>
                     <p className="font-medium text-gray-200">{template.name}</p>
                     <p className="text-xs text-gray-500">{template.category}</p>
+                    {(template.width || template.height) && (
+                      <p className="text-[10px] text-gray-500 mt-1">
+                        {template.width ?? '?'} x {template.height ?? '?'} px
+                      </p>
+                    )}
                   </div>
                   <button
                     onClick={() => handleDeleteTemplate(template.id)}
@@ -286,6 +329,23 @@ export function TemplateManager() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                   </button>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleFindAndClick(template.name)}
+                    className="btn btn-primary flex-1"
+                  >
+                    Find & Click
+                  </button>
+                  <a
+                    href={toFileUrl(template.path)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn btn-secondary"
+                  >
+                    Open
+                  </a>
                 </div>
               </div>
             ))}

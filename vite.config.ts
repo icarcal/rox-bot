@@ -10,6 +10,9 @@ export default defineConfig({
     electron([
       {
         entry: 'src/main/index.ts',
+        onstart() {
+          // Disable auto-start; electron is launched by npm script
+        },
         vite: {
           build: {
             outDir: 'dist/main',
@@ -21,6 +24,9 @@ export default defineConfig({
       },
       {
         entry: 'src/preload/index.ts',
+        onstart() {
+          // Disable auto-start; electron is launched by npm script
+        },
         vite: {
           build: {
             outDir: 'dist/preload',

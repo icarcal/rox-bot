@@ -31,6 +31,7 @@ export type IpcChannel =
   | 'screen:capture'
   | 'screen:find-image'
   | 'screen:get-mouse-position'
+  | 'screen:find-and-click'
 
   // Templates
   | 'template:get-all'
@@ -69,6 +70,12 @@ export interface ScreenCaptureRequest {
 }
 
 export interface FindImageRequest {
+  templateName: string;
+  confidence?: number;
+  region?: Region;
+}
+
+export interface FindAndClickRequest {
   templateName: string;
   confidence?: number;
   region?: Region;

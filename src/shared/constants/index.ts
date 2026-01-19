@@ -52,6 +52,7 @@ export const IPC_CHANNELS = {
   SCREEN_CAPTURE: 'screen:capture',
   SCREEN_FIND_IMAGE: 'screen:find-image',
   SCREEN_GET_MOUSE_POSITION: 'screen:get-mouse-position',
+  SCREEN_FIND_AND_CLICK: 'screen:find-and-click',
 
   // Templates
   TEMPLATE_GET_ALL: 'template:get-all',

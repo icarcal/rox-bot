@@ -1,4 +1,4 @@
-import { BrowserWindow, shell } from 'electron';
+import { BrowserWindow, shell, app } from 'electron';
 import path from 'path';
 
 let mainWindow: BrowserWindow | null = null;
@@ -32,8 +32,10 @@ export function createWindow(): BrowserWindow {
   });
 
   // Load the app
-  if (process.env.NODE_ENV === 'development' || process.env.VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL || 'http://localhost:5173');
+  const isDev = !app.isPackaged;
+  if (isDev) {
+    // In dev mode, try to load from dev server
+    mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));

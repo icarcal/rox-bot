@@ -1,8 +1,9 @@
 import { ipcMain } from 'electron';
-import type { IpcResponse, ScreenCaptureRequest, FindImageRequest, MatchResult, Point } from '../../shared/types';
+import type { IpcResponse, ScreenCaptureRequest, FindImageRequest, FindAndClickRequest, MatchResult, Point } from '../../shared/types';
 import { IPC_CHANNELS } from '../../shared/constants';
 import { ScreenService } from '../../automation/vision/ScreenService';
 import { LogService } from '../services/LogService';
+import { mouse, Button, straightTo } from '@nut-tree-fork/nut-js';
 
 export function registerScreenHandlers(): void {
   ipcMain.handle(
@@ -48,6 +49,33 @@ export function registerScreenHandlers(): void {
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error';
         LogService.error('Failed to get mouse position', { error: message });
+        return { success: false, error: message };
+      }
+    }
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SCREEN_FIND_AND_CLICK,
+    async (_event, data: FindAndClickRequest): Promise<IpcResponse<MatchResult>> => {
+      try {
+        const result = await ScreenService.findImage(
+          data.templateName,
+          data.confidence,
+          data.region
+        );
+
+        if (!result.found || !result.location) {
+          return { success: true, data: result };
+        }
+
+        // Move and click center of found region
+        await mouse.move(straightTo({ x: result.location.x, y: result.location.y }));
+        await mouse.click(Button.LEFT);
+
+        return { success: true, data: result };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        LogService.error('Failed to find and click image', { error: message, template: data.templateName });
         return { success: false, error: message };
       }
     }
