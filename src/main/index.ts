@@ -1,5 +1,5 @@
 import { app, BrowserWindow, globalShortcut } from 'electron';
-import { createWindow, getMainWindow, sendToRenderer } from './window';
+import { createWindow, sendToRenderer } from './window';
 import { registerAllIpcHandlers } from './ipc';
 import { AutomationEngine } from '../automation/core/Engine';
 import { LogService } from './services/LogService';

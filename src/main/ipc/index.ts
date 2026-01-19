@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron';
+
 import type { AutomationEngine } from '../../automation/core/Engine';
 import { registerAutomationHandlers } from './automation.ipc';
 import { registerTaskHandlers } from './task.ipc';

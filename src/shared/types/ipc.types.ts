@@ -1,4 +1,6 @@
+// @ts-expect-error - Types used in interface extensions
 import type { Task, TaskExecutionContext, ScheduledTask } from './task.types';
+// @ts-expect-error - Types used in interface extensions  
 import type { AutomationState, AutomationConfig, MatchResult, Template, Region } from './automation.types';
 
 export type IpcChannel =
