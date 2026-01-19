@@ -6,7 +6,6 @@ import { StorageService } from '../../main/services/StorageService';
 
 export class TaskRunner extends EventEmitter {
   private executor: ActionExecutor;
-  private isRunning = false;
   private isPaused = false;
   private shouldStop = false;
 
@@ -16,7 +15,6 @@ export class TaskRunner extends EventEmitter {
   }
 
   async run(task: Task, context: TaskExecutionContext): Promise<void> {
-    this.isRunning = true;
     this.isPaused = false;
     this.shouldStop = false;
 
@@ -29,7 +27,7 @@ export class TaskRunner extends EventEmitter {
       this.emit('error', error);
       throw error;
     } finally {
-      this.isRunning = false;
+      // Task execution complete
     }
   }
 
@@ -113,7 +111,6 @@ export class TaskRunner extends EventEmitter {
   emergencyStop(): void {
     this.shouldStop = true;
     this.isPaused = false;
-    this.isRunning = false;
   }
 
   private sleep(ms: number): Promise<void> {

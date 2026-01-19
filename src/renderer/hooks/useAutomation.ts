@@ -3,7 +3,7 @@ import { useStore } from '../store';
 import { IPC_CHANNELS } from '../../shared/constants';
 
 export function useAutomation() {
-  const { automationState, selectedTaskId, tasks, setAutomationState } = useStore();
+  const { automationState, selectedTaskId, setAutomationState } = useStore();
 
   const startTask = useCallback(async (taskId?: string) => {
     const id = taskId || selectedTaskId;

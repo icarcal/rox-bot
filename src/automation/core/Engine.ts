@@ -1,4 +1,4 @@
-import type { Task, AutomationState, AutomationStatus, TaskExecutionContext } from '../../shared/types';
+import type { Task, AutomationState, TaskExecutionContext } from '../../shared/types';
 import { TaskRunner } from './TaskRunner';
 import { StorageService } from '../../main/services/StorageService';
 import { LogService } from '../../main/services/LogService';
@@ -121,7 +121,7 @@ export class AutomationEngine {
     }
 
     this.updateState({
-      status: 'stopped',
+      status: 'stopping',
       currentTaskId: undefined,
       currentActionIndex: undefined,
       totalActions: undefined,
@@ -162,7 +162,7 @@ export class AutomationEngine {
     }
 
     this.updateState({
-      status: 'stopped',
+      status: 'idle',
       currentTaskId: undefined,
       currentActionIndex: undefined,
       totalActions: undefined,
