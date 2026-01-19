@@ -1,12 +1,13 @@
-import { ipcMain, app } from 'electron';
+import { ipcMain, app, dialog } from 'electron';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import fs from 'fs';
-import type { IpcResponse, Template, TemplateAddRequest, Region } from '../../shared/types';
+import type { IpcResponse, Template, TemplateAddRequest, Region, TemplateImportRequest } from '../../shared/types';
 import { IPC_CHANNELS } from '../../shared/constants';
 import { StorageService } from '../services/StorageService';
 import { ScreenService } from '../../automation/vision/ScreenService';
 import { LogService } from '../services/LogService';
+import { PNG } from 'pngjs';
 
 const TEMPLATES_DIR = path.join(app.getPath('userData'), 'templates');
 
@@ -51,6 +52,8 @@ export function registerTemplateHandlers(): void {
           name: data.name,
           path: filePath,
           category: data.category,
+          width: data.region.width,
+          height: data.region.height,
           createdAt: new Date().toISOString(),
         };
 
@@ -95,6 +98,63 @@ export function registerTemplateHandlers(): void {
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error';
         LogService.error('Failed to capture region', { error: message });
+        return { success: false, error: message };
+      }
+    }
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.TEMPLATE_IMPORT_FILE,
+    async (_event, data: TemplateImportRequest): Promise<IpcResponse<Template>> => {
+      try {
+        ensureTemplatesDir();
+
+        const result = await dialog.showOpenDialog({
+          title: 'Select template image',
+          filters: [{ name: 'Images', extensions: ['png', 'jpg', 'jpeg'] }],
+          properties: ['openFile'],
+        });
+
+        if (result.canceled || result.filePaths.length === 0) {
+          return { success: false, error: 'No file selected' };
+        }
+
+        const sourcePath = result.filePaths[0];
+        const id = uuidv4();
+        const ext = path.extname(sourcePath) || '.png';
+        const filename = `${data.category}_${data.name.replace(/\s+/g, '-')}_${id.slice(0, 8)}${ext}`;
+        const destPath = path.join(TEMPLATES_DIR, filename);
+
+        fs.copyFileSync(sourcePath, destPath);
+
+        let width: number | undefined;
+        let height: number | undefined;
+        try {
+          const buffer = fs.readFileSync(destPath);
+          const png = PNG.sync.read(buffer);
+          width = png.width;
+          height = png.height;
+        } catch {
+          width = undefined;
+          height = undefined;
+        }
+
+        const template: Template = {
+          id,
+          name: data.name,
+          category: data.category,
+          path: destPath,
+          width,
+          height,
+          createdAt: new Date().toISOString(),
+        };
+
+        StorageService.saveTemplate(template);
+        LogService.info('Template imported', { templateId: id, name: data.name });
+        return { success: true, data: template };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        LogService.error('Failed to import template', { error: message });
         return { success: false, error: message };
       }
     }

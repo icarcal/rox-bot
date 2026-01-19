@@ -37,6 +37,7 @@ export type IpcChannel =
   | 'template:add'
   | 'template:delete'
   | 'template:capture-region'
+  | 'template:import-file'
 
   // Settings
   | 'settings:get'
@@ -81,6 +82,11 @@ export interface TemplateAddRequest {
   name: string;
   category: string;
   region: Region;
+}
+
+export interface TemplateImportRequest {
+  name: string;
+  category: string;
 }
 
 export interface SettingsGetRequest {

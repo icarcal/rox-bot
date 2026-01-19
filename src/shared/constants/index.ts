@@ -58,6 +58,7 @@ export const IPC_CHANNELS = {
   TEMPLATE_ADD: 'template:add',
   TEMPLATE_DELETE: 'template:delete',
   TEMPLATE_CAPTURE_REGION: 'template:capture-region',
+  TEMPLATE_IMPORT_FILE: 'template:import-file',
 
   // Settings
   SETTINGS_GET: 'settings:get',

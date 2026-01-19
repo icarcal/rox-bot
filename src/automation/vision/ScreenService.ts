@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import type { Point, Region, MatchResult } from '../../shared/types';
 import { StorageService } from '../../main/services/StorageService';
+import { PNG } from 'pngjs';
 
 class ScreenServiceClass {
   private templatesDir: string;
@@ -27,7 +28,6 @@ class ScreenServiceClass {
 
       const screenshot = await screen.grab();
       return await screenshot.toRGB().then((img) => {
-        // Convert to PNG buffer
         return this.rgbToPngBuffer(img.data, img.width, img.height);
       });
     } catch (error) {
@@ -178,12 +178,17 @@ class ScreenServiceClass {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private rgbToPngBuffer(data: Uint8Array, _width: number, _height: number): Buffer {
-    // Simple BMP-like buffer creation (for basic usage)
-    // In production, you'd use a proper PNG encoder like pngjs
-    // For now, return raw RGB data that can be converted in renderer
-    return Buffer.from(data);
+  private rgbToPngBuffer(data: Uint8Array, width: number, height: number): Buffer {
+    // Encode raw RGB into PNG
+    const png = new PNG({ width, height });
+    // pngjs expects RGBA; expand RGB -> RGBA with opaque alpha
+    for (let i = 0, j = 0; i < data.length; i += 3, j += 4) {
+      png.data[j] = data[i];
+      png.data[j + 1] = data[i + 1];
+      png.data[j + 2] = data[i + 2];
+      png.data[j + 3] = 255;
+    }
+    return PNG.sync.write(png);
   }
 }
 

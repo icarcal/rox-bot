@@ -55,6 +55,29 @@ export function TemplateManager() {
     }
   };
 
+  const handleImportTemplate = async () => {
+    if (!newTemplateName.trim()) {
+      alert('Please enter a template name');
+      return;
+    }
+
+    try {
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.TEMPLATE_IMPORT_FILE, {
+        name: newTemplateName.trim(),
+        category: newTemplateCategory,
+      });
+
+      if (res.success && res.data) {
+        addTemplate(res.data as any);
+        setNewTemplateName('');
+        setPreviewImage(null);
+        setIsCapturing(false);
+      }
+    } catch (error) {
+      console.error('Failed to import template:', error);
+    }
+  };
+
   const handleDeleteTemplate = async (id: string) => {
     if (!confirm('Are you sure you want to delete this template?')) return;
 
@@ -77,12 +100,20 @@ export function TemplateManager() {
             💡 Templates are found anywhere on screen during automation
           </p>
         </div>
-        <button
-          onClick={() => setIsCapturing(true)}
-          className="btn btn-primary"
-        >
-          + Capture New
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleImportTemplate}
+            className="btn btn-secondary"
+          >
+            Upload Image
+          </button>
+          <button
+            onClick={() => setIsCapturing(true)}
+            className="btn btn-primary"
+          >
+            + Capture New
+          </button>
+        </div>
       </div>
 
       {/* Filter */}
