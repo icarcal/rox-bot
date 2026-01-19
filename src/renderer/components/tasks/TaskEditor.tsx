@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useStore } from '../../store';
 import { IPC_CHANNELS } from '../../../shared/constants';
-import type { Task, Action, ActionType } from '../../../shared/types';
+import type { Action, ActionType } from '../../../shared/types';
 import { ActionItem } from './ActionItem';
 import { ActionForm } from './ActionForm';
 import { v4 as uuidv4 } from 'uuid';

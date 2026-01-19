@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useStore } from '../../store';
 import { IPC_CHANNELS, TEMPLATE_CATEGORIES } from '../../../shared/constants';
 import type { Region } from '../../../shared/types';
@@ -8,7 +8,7 @@ export function TemplateManager() {
   const [isCapturing, setIsCapturing] = useState(false);
   const [captureRegion, setCaptureRegion] = useState<Region>({ x: 0, y: 0, width: 100, height: 100 });
   const [newTemplateName, setNewTemplateName] = useState('');
-  const [newTemplateCategory, setNewTemplateCategory] = useState(TEMPLATE_CATEGORIES[0]);
+  const [newTemplateCategory, setNewTemplateCategory] = useState<string>(TEMPLATE_CATEGORIES[0]);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>('all');
 
@@ -44,7 +44,8 @@ export function TemplateManager() {
       });
 
       if (res.success && res.data) {
-        addTemplate(res.data);
+        // Type assertion since we know the IPC handler returns a valid Template
+        addTemplate(res.data as any);
         setNewTemplateName('');
         setPreviewImage(null);
         setIsCapturing(false);

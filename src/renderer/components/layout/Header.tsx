@@ -1,4 +1,3 @@
-import React from 'react';
 import { ControlPanel } from '../automation/ControlPanel';
 import { StatusDisplay } from '../automation/StatusDisplay';
 

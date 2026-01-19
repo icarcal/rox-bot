@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { Action, ClickAction, TypeAction, WaitAction, FindImageAction, WaitForImageAction, PressKeyAction, HotkeyAction, ConditionAction, LoopAction } from '../../../shared/types';
 import { useStore } from '../../store';
 
@@ -173,7 +173,7 @@ function ClickFields({
               onChange={(e) =>
                 setAction((prev) => ({
                   ...prev,
-                  target: { ...prev.target, x: parseInt(e.target.value) || 0 },
+                  target: { ...(prev as ClickAction).target, x: parseInt(e.target.value) || 0 },
                 }))
               }
               className="input"
@@ -187,7 +187,7 @@ function ClickFields({
               onChange={(e) =>
                 setAction((prev) => ({
                   ...prev,
-                  target: { ...prev.target, y: parseInt(e.target.value) || 0 },
+                  target: { ...(prev as ClickAction).target, y: parseInt(e.target.value) || 0 },
                 }))
               }
               className="input"

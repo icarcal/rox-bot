@@ -1,4 +1,3 @@
-import React from 'react';
 import { useStore } from '../../store';
 import { IPC_CHANNELS } from '../../../shared/constants';
 

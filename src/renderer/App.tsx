@@ -1,6 +1,6 @@
-import React from 'react';
+
 import { MainLayout } from './components/layout/MainLayout';
-import { useStore } from './store';
+
 
 function App() {
   return (
