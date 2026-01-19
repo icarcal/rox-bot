@@ -1,11 +1,28 @@
 import { app, BrowserWindow, globalShortcut } from 'electron';
-import { createWindow, sendToRenderer } from './window';
+import { createWindow, sendToRenderer, getMainWindow } from './window';
 import { registerAllIpcHandlers } from './ipc';
 import { AutomationEngine } from '../automation/core/Engine';
 import { LogService } from './services/LogService';
 import { KEYS, IPC_CHANNELS } from '../shared/constants';
 
 let automationEngine: AutomationEngine | null = null;
+
+// Ensure single instance to avoid duplicate windows
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+if (!gotSingleInstanceLock) {
+  app.quit();
+  process.exit(0);
+}
+
+app.on('second-instance', () => {
+  const existing = getMainWindow();
+  if (existing) {
+    if (existing.isMinimized()) existing.restore();
+    existing.focus();
+  } else {
+    createWindow();
+  }
+});
 
 async function initialize() {
   // Initialize services
