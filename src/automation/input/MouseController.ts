@@ -1,4 +1,4 @@
-import { mouse, Point as NutPoint, Button, straightTo } from '@nut-tree/nut-js';
+import { mouse, Point as NutPoint, Button, straightTo } from '@nut-tree-fork/nut-js';
 import type { Point } from '../../shared/types';
 
 class MouseControllerClass {

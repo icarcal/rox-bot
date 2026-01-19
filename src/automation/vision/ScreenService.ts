@@ -1,4 +1,4 @@
-import { screen, Region as NutRegion, imageResource, OptionalSearchParameters } from '@nut-tree/nut-js';
+import { screen, Region as NutRegion, imageResource, OptionalSearchParameters, mouse } from '@nut-tree-fork/nut-js';
 import { app } from 'electron';
 import path from 'path';
 import fs from 'fs';
@@ -68,7 +68,7 @@ class ScreenServiceClass {
 
       const templatePath = template?.path || path.join(process.cwd(), 'resources', 'templates', templateName);
 
-      const searchParams: OptionalSearchParameters = {
+      const searchParams: OptionalSearchParameters<any> = {
         confidence: effectiveConfidence,
       };
 
@@ -136,7 +136,7 @@ class ScreenServiceClass {
   }
 
   async getMousePosition(): Promise<Point> {
-    const pos = await screen.mousePosition();
+    const pos = await mouse.getPosition();
     return { x: pos.x, y: pos.y };
   }
 
@@ -144,7 +144,8 @@ class ScreenServiceClass {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  private rgbToPngBuffer(data: Uint8Array, width: number, height: number): Buffer {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private rgbToPngBuffer(data: Uint8Array, _width: number, _height: number): Buffer {
     // Simple BMP-like buffer creation (for basic usage)
     // In production, you'd use a proper PNG encoder like pngjs
     // For now, return raw RGB data that can be converted in renderer

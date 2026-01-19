@@ -1,4 +1,4 @@
-import { keyboard, Key } from '@nut-tree/nut-js';
+import { keyboard, Key } from '@nut-tree-fork/nut-js';
 
 // Key mapping from string names to nut.js Key enum
 const KEY_MAP: Record<string, Key> = {
