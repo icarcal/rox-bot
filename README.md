@@ -58,19 +58,19 @@ npm run electron:build
 
 Available actions:
 
-| Action | Description |
-|--------|-------------|
-| **Click** | Click at coordinates, on an image, or stored variable |
-| **Double Click** | Double-click variant |
-| **Right Click** | Right-click variant |
-| **Type** | Type text with configurable delay |
-| **Press Key** | Press a single key (enter, tab, f1, etc.) |
-| **Hotkey** | Press key combination (ctrl+c, alt+f4, etc.) |
-| **Wait** | Pause for specified milliseconds |
-| **Find Image** | Search screen for template image |
-| **Wait for Image** | Wait until image appears/disappears |
-| **Condition** | If-else based on image visibility |
-| **Loop** | Repeat actions (count, while visible, until visible) |
+| Action             | Description                                           |
+| ------------------ | ----------------------------------------------------- |
+| **Click**          | Click at coordinates, on an image, or stored variable |
+| **Double Click**   | Double-click variant                                  |
+| **Right Click**    | Right-click variant                                   |
+| **Type**           | Type text with configurable delay                     |
+| **Press Key**      | Press a single key (enter, tab, f1, etc.)             |
+| **Hotkey**         | Press key combination (ctrl+c, alt+f4, etc.)          |
+| **Wait**           | Pause for specified milliseconds                      |
+| **Find Image**     | Search screen for template image                      |
+| **Wait for Image** | Wait until image appears/disappears                   |
+| **Condition**      | If-else based on image visibility                     |
+| **Loop**           | Repeat actions (count, while visible, until visible)  |
 
 ### 3. Create Image Templates
 
@@ -143,7 +143,11 @@ Tasks are stored as JSON and can be exported/imported:
       "loopType": "while-image-visible",
       "templateName": "accept-btn.png",
       "actions": [
-        { "id": "action-3-1", "type": "click", "target": { "type": "image", "templateName": "accept-btn.png" } }
+        {
+          "id": "action-3-1",
+          "type": "click",
+          "target": { "type": "image", "templateName": "accept-btn.png" }
+        }
       ]
     }
   ]
@@ -161,8 +165,8 @@ Access via the **Settings** tab:
 
 ## Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
+| Key | Action                          |
+| --- | ------------------------------- |
 | F12 | Emergency stop (works globally) |
 
 ## Troubleshooting
@@ -173,11 +177,11 @@ Access via the **Settings** tab:
 - Lower the confidence threshold in Settings (try 0.8 or 0.7)
 - Recapture templates if game UI has changed
 
-### nut-tree/nut-js installation issues
+### nut-tree-fork/nut-js installation issues
 
 ```bash
 # If you get native module errors, rebuild:
-npm rebuild @nut-tree/nut-js
+npm rebuild @nut-tree-fork/nut-js
 ```
 
 ### Windows N edition issues
@@ -191,7 +195,7 @@ Install the Media Feature Pack from Microsoft for image recognition to work.
 - **TypeScript** - Type safety
 - **Vite** - Build tool
 - **Tailwind CSS** - Styling
-- **@nut-tree/nut-js** - Screen capture, image matching, input simulation
+- **@nut-tree-fork/nut-js** - Screen capture, image matching, input simulation
 - **Zustand** - State management
 - **electron-store** - Persistent storage
 
