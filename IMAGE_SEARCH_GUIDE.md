@@ -1,4 +1,4 @@
-# Image Search & Template Matching Guide
+¤§# Image Search & Template Matching Guide
 
 ## Overview
 
@@ -76,12 +76,12 @@ Wait until an image appears (or disappears) with a timeout:
 
 The confidence setting determines how similar an on-screen image must be to your template:
 
-| Value | Use Case | Notes |
-|-------|----------|-------|
-| 0.95+ | Exact matches | UI elements with consistent appearance |
-| 0.85-0.90 | **Standard** | Recommended for most automation |
-| 0.70-0.80 | Variation tolerance | Images that may have slight changes |
-| < 0.70 | Very flexible | May get false positives |
+| Value     | Use Case            | Notes                                  |
+| --------- | ------------------- | -------------------------------------- |
+| 0.95+     | Exact matches       | UI elements with consistent appearance |
+| 0.85-0.90 | **Standard**        | Recommended for most automation        |
+| 0.70-0.80 | Variation tolerance | Images that may have slight changes    |
+| < 0.70    | Very flexible       | May get false positives                |
 
 **Tip**: Start with 0.9 (default). If images aren't found, lower to 0.85. If you get false positives, raise to 0.95.
 
@@ -94,6 +94,7 @@ By default, the system searches the entire screen. For very large or complex ima
 3. The search will only look in that area (faster)
 
 **When to use**:
+
 - Large monitors (2160p+)
 - Multiple monitors
 - Very similar images elsewhere on screen
@@ -104,12 +105,14 @@ By default, the system searches the entire screen. For very large or complex ima
 ### Template Capture
 
 ✅ **DO**:
+
 - Capture only the distinctive part (e.g., just the button, not the whole window)
 - Include enough context for uniqueness
 - Use elements with high contrast
 - Test on different UI themes if applicable
 
 ❌ **DON'T**:
+
 - Capture enormous regions (slows down search)
 - Use generic templates (text, basic shapes)
 - Capture entire screens
@@ -118,12 +121,14 @@ By default, the system searches the entire screen. For very large or complex ima
 ### Confidence Settings
 
 ✅ **DO**:
+
 - Start with `0.9` for most elements
 - Use `0.95` for exact UI matches
 - Use `0.85` if targets vary slightly
 - Adjust based on failures
 
 ❌ **DON'T**:
+
 - Use very low values (`< 0.70`) unless necessary
 - Mix wildly different confidence levels without testing
 - Assume higher = better (can miss valid matches)
@@ -131,12 +136,14 @@ By default, the system searches the entire screen. For very large or complex ima
 ### Task Design
 
 ✅ **DO**:
+
 - Verify images exist before using them with `find-image`
 - Use `wait-for-image` before clicking on dynamic elements
 - Add delays before searches if UI is animating
 - Store click results for logging/debugging
 
 ❌ **DON'T**:
+
 - Assume fixed positions (use image search instead)
 - Search immediately after UI transitions
 - Use overly aggressive confidence (< 0.8) without testing
@@ -178,6 +185,7 @@ Task: "Wait for Save Confirmation"
 **Symptom**: Search fails even though image is visible
 
 **Solutions**:
+
 1. Lower confidence threshold (try 0.85 or 0.80)
 2. Re-capture the template (may be corrupted or outdated)
 3. Check template region is distinct enough
@@ -188,6 +196,7 @@ Task: "Wait for Save Confirmation"
 **Symptom**: Bot clicks wrong element or wrong location
 
 **Solutions**:
+
 1. Raise confidence threshold (try 0.95)
 2. Capture larger, more distinctive region
 3. Use search region to exclude problematic areas
@@ -198,6 +207,7 @@ Task: "Wait for Save Confirmation"
 **Symptom**: Image search takes too long
 
 **Solutions**:
+
 1. Capture smaller template (less data to compare)
 2. Enable search region (limit area to search)
 3. Lower confidence threshold slightly (0.85 vs 0.95)
@@ -208,6 +218,7 @@ Task: "Wait for Save Confirmation"
 ### Where Templates Are Stored
 
 Templates are saved in:
+
 ```
 %APPDATA%/rox-bot/templates/  (Windows)
 ~/.config/rox-bot/templates/  (Linux)
@@ -215,6 +226,7 @@ Templates are saved in:
 ```
 
 Files are PNG images named like:
+
 ```
 category_templatename_hash.png
 e.g., ui_submit-button_a1b2c3.png
@@ -223,6 +235,7 @@ e.g., ui_submit-button_a1b2c3.png
 ### Search Algorithm
 
 ROX Bot uses `@nut-tree-fork/nut-js` for image matching, which:
+
 - Performs pixel-by-pixel comparison with fuzzy matching
 - Returns center point and bounding region of match
 - Searches entire screen by default
@@ -231,6 +244,7 @@ ROX Bot uses `@nut-tree-fork/nut-js` for image matching, which:
 ### Storage
 
 Found image locations can be stored in variables:
+
 ```javascript
 // Find image and store location
 "store-result-in": "buttonLocation"
@@ -251,6 +265,7 @@ ROX Bot automatically handles multiple monitors. Templates will search across al
 ### Dynamic UI Elements
 
 For elements that change slightly (different text, colors):
+
 - Use lower confidence (0.80-0.85)
 - Capture the stable parts of the UI
 - Test across different states
@@ -258,6 +273,7 @@ For elements that change slightly (different text, colors):
 ### Performance Monitoring
 
 To check search performance:
+
 1. Open DevTools (F12 in development mode)
 2. Check console logs for timing
 3. Adjust template size/confidence based on metrics
@@ -265,8 +281,8 @@ To check search performance:
 ### Layered Searches
 
 For complex tasks with multiple similar elements:
+
 1. Define unique regions for each element
 2. Use confidence matching strategically
 3. Add delays between searches
 4. Verify with find-image before clicking
-
