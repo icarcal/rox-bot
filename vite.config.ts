@@ -11,7 +11,7 @@ export default defineConfig({
       {
         entry: 'src/main/index.ts',
         onstart(options) {
-          options.startup();
+          options.reload();
         },
         vite: {
           build: {
