@@ -14,8 +14,8 @@
 - Types: feat, fix, docs, style,
   efactor, perf, est, chore
 - Examples:
-  - eat(automation): add image recognition support
-  - ix(ui): resolve task editor layout issue
+  - feat(automation): add image recognition support
+  - fix(ui): resolve task editor layout issue
   - docs: update installation instructions
   - chore: add agent configuration files
 
