@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: ROX Bot - Ragnarok X Automation\n\nFeatures:\n- Electron 32 + React 18 + TypeScript + Vite setup\n- Screen capture and image recognition with @nut-tree/nut-js\n- Mouse and keyboard input simulation\n- 11 action types \\(click, type, wait, find-image, loops, conditions\\)\n- Visual task editor with drag-and-drop\n- Template image management\n- Real-time logging and status display\n- Emergency stop hotkey \\(F12\\)\n- Persistent storage with electron-store\n- Zustand state management\n- Tailwind CSS styling\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(cmd /c \"rmdir /s /q \"\"C:\\\\Users\\\\icaro\\\\.claude\\\\plugins\\\\marketplaces\\\\anthropics-claude-plugins-official\"\"\")"
+    ]
+  }
+}
