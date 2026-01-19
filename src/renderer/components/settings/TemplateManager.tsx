@@ -71,7 +71,12 @@ export function TemplateManager() {
   return (
     <div className="h-full flex flex-col p-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-gray-100">Image Templates</h2>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-100">Image Templates</h2>
+          <p className="text-xs text-gray-500 mt-1">
+            💡 Templates are found anywhere on screen during automation
+          </p>
+        </div>
         <button
           onClick={() => setIsCapturing(true)}
           className="btn btn-primary"

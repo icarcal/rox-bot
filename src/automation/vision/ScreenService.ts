@@ -36,6 +36,13 @@ class ScreenServiceClass {
     }
   }
 
+  /**
+   * Captures a specific region of the screen.
+   * Used for saving template images for later image matching.
+   * 
+   * @param region - The screen region to capture (x, y, width, height)
+   * @returns PNG buffer of the captured region
+   */
   async captureRegion(region: Region): Promise<Buffer> {
     try {
       const nutRegion = new NutRegion(region.x, region.y, region.width, region.height);
@@ -49,6 +56,33 @@ class ScreenServiceClass {
     }
   }
 
+  /**
+   * Finds an image template on the screen.
+   * 
+   * By default, searches the entire screen. Can optionally limit search to a specific region
+   * for better performance on large images or when searching in a known area.
+   * 
+   * @param templateName - Name or path of the template image to find
+   * @param confidence - Matching confidence threshold (0-1). Default from config.
+   *                    Higher values = stricter matching (0.95 for exact matches)
+   *                    Lower values = more flexible matching (0.7 for similar images)
+   * @param region - Optional region to limit search (for performance). If not provided,
+   *                searches the entire screen, finding the image wherever it appears.
+   * @returns MatchResult with found status, location (center point), and bounding region
+   * 
+   * @example
+   * // Find image anywhere on screen
+   * const result = await ScreenService.findImage('button.png', 0.9);
+   * if (result.found) {
+   *   console.log(`Found at: ${result.location.x}, ${result.location.y}`);
+   * }
+   * 
+   * @example
+   * // Find image only in a specific region (faster)
+   * const result = await ScreenService.findImage('button.png', 0.9, {
+   *   x: 0, y: 0, width: 1920, height: 1080
+   * });
+   */
   async findImage(templateName: string, confidence?: number, region?: Region): Promise<MatchResult> {
     try {
       const config = StorageService.getAutomationConfig();

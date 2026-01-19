@@ -398,6 +398,8 @@ function FindImageFields({
   setAction: React.Dispatch<React.SetStateAction<Action>>;
   templates: { id: string; name: string }[];
 }) {
+  const [useSearchRegion, setUseSearchRegion] = useState(!!action.region);
+
   return (
     <>
       <div>
@@ -414,9 +416,122 @@ function FindImageFields({
             </option>
           ))}
         </select>
+        <p className="text-xs text-gray-500 mt-1">
+          💡 Will search the entire screen for this image
+        </p>
       </div>
+
       <div>
-        <label className="block text-sm text-gray-400 mb-1">Store result in variable</label>
+        <label className="block text-sm text-gray-400 mb-1">Confidence (0-1)</label>
+        <div className="flex gap-2 items-center">
+          <input
+            type="range"
+            value={action.confidence || 0.9}
+            onChange={(e) =>
+              setAction((prev) => ({ ...prev, confidence: parseFloat(e.target.value) || 0.9 }))
+            }
+            className="flex-1"
+            min={0}
+            max={1}
+            step={0.05}
+          />
+          <span className="text-sm font-mono bg-dark-300 px-2 py-1 rounded min-w-12">
+            {(action.confidence || 0.9).toFixed(2)}
+          </span>
+        </div>
+        <p className="text-xs text-gray-500 mt-1">
+          Higher = stricter matching (0.95 for exact matches, 0.7 for flexible)
+        </p>
+      </div>
+
+      <div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={useSearchRegion}
+            onChange={(e) => {
+              setUseSearchRegion(e.target.checked);
+              if (!e.target.checked) {
+                setAction((prev) => ({ ...prev, region: undefined }));
+              } else {
+                setAction((prev) => ({
+                  ...prev,
+                  region: { x: 0, y: 0, width: 1920, height: 1080 },
+                }));
+              }
+            }}
+            className="w-4 h-4 rounded border-gray-600 bg-dark-300 text-primary-500"
+          />
+          <span className="text-sm text-gray-300">Limit search to specific screen region (optional)</span>
+        </label>
+        <p className="text-xs text-gray-500 mt-1">
+          Leave unchecked to search entire screen (recommended)
+        </p>
+      </div>
+
+      {useSearchRegion && action.region && (
+        <div className="grid grid-cols-2 gap-2 bg-dark-300 p-3 rounded">
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">X</label>
+            <input
+              type="number"
+              value={action.region.x}
+              onChange={(e) =>
+                setAction((prev) => ({
+                  ...prev,
+                  region: { ...(prev as FindImageAction).region!, x: parseInt(e.target.value) || 0 },
+                }))
+              }
+              className="input text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Y</label>
+            <input
+              type="number"
+              value={action.region.y}
+              onChange={(e) =>
+                setAction((prev) => ({
+                  ...prev,
+                  region: { ...(prev as FindImageAction).region!, y: parseInt(e.target.value) || 0 },
+                }))
+              }
+              className="input text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Width</label>
+            <input
+              type="number"
+              value={action.region.width}
+              onChange={(e) =>
+                setAction((prev) => ({
+                  ...prev,
+                  region: { ...(prev as FindImageAction).region!, width: parseInt(e.target.value) || 100 },
+                }))
+              }
+              className="input text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Height</label>
+            <input
+              type="number"
+              value={action.region.height}
+              onChange={(e) =>
+                setAction((prev) => ({
+                  ...prev,
+                  region: { ...(prev as FindImageAction).region!, height: parseInt(e.target.value) || 100 },
+                }))
+              }
+              className="input text-sm"
+            />
+          </div>
+        </div>
+      )}
+
+      <div>
+        <label className="block text-sm text-gray-400 mb-1">Store result in variable (optional)</label>
         <input
           type="text"
           value={action.storeResultIn || ''}
@@ -424,20 +539,9 @@ function FindImageFields({
           placeholder="e.g., buttonLocation"
           className="input"
         />
-      </div>
-      <div>
-        <label className="block text-sm text-gray-400 mb-1">Confidence (0-1)</label>
-        <input
-          type="number"
-          value={action.confidence || 0.9}
-          onChange={(e) =>
-            setAction((prev) => ({ ...prev, confidence: parseFloat(e.target.value) || 0.9 }))
-          }
-          className="input"
-          min={0}
-          max={1}
-          step={0.05}
-        />
+        <p className="text-xs text-gray-500 mt-1">
+          Save the found coordinates to use in later actions
+        </p>
       </div>
     </>
   );
@@ -468,7 +572,11 @@ function WaitForImageFields({
             </option>
           ))}
         </select>
+        <p className="text-xs text-gray-500 mt-1">
+          💡 Will search the entire screen for this image
+        </p>
       </div>
+
       <div>
         <label className="block text-sm text-gray-400 mb-1">Timeout (ms)</label>
         <input
@@ -480,7 +588,34 @@ function WaitForImageFields({
           className="input"
           min={0}
         />
+        <p className="text-xs text-gray-500 mt-1">
+          How long to wait before giving up (in milliseconds)
+        </p>
       </div>
+
+      <div>
+        <label className="block text-sm text-gray-400 mb-1">Confidence (0-1)</label>
+        <div className="flex gap-2 items-center">
+          <input
+            type="range"
+            value={action.confidence || 0.9}
+            onChange={(e) =>
+              setAction((prev) => ({ ...prev, confidence: parseFloat(e.target.value) || 0.9 }))
+            }
+            className="flex-1"
+            min={0}
+            max={1}
+            step={0.05}
+          />
+          <span className="text-sm font-mono bg-dark-300 px-2 py-1 rounded min-w-12">
+            {(action.confidence || 0.9).toFixed(2)}
+          </span>
+        </div>
+        <p className="text-xs text-gray-500 mt-1">
+          Higher = stricter matching (0.95 for exact matches, 0.7 for flexible)
+        </p>
+      </div>
+
       <div>
         <label className="flex items-center gap-2 cursor-pointer">
           <input
@@ -489,8 +624,11 @@ function WaitForImageFields({
             onChange={(e) => setAction((prev) => ({ ...prev, waitForDisappear: e.target.checked }))}
             className="w-4 h-4 rounded border-gray-600 bg-dark-300 text-primary-500"
           />
-          <span className="text-sm text-gray-300">Wait for image to disappear</span>
+          <span className="text-sm text-gray-300">Wait for image to disappear instead</span>
         </label>
+        <p className="text-xs text-gray-500 mt-1">
+          When checked, waits until the image is no longer visible
+        </p>
       </div>
     </>
   );
